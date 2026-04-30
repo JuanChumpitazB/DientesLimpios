@@ -7,6 +7,10 @@ namespace DientesLimpios.Dominio.Entidades
         public Guid Id { get; private set; }
         public string Nombre { get; private set; } = null!;
 
+        protected Consultorio()
+        {
+            // Requerido por EF Core
+        }
         public Consultorio(string nombre)
         {
             AplicarReglasDeNegocio(nombre);
