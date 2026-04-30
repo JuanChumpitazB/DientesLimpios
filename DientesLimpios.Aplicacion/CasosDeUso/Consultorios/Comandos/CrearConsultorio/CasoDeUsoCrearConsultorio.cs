@@ -1,18 +1,16 @@
 ﻿using DientesLimpios.Aplicacion.Contratos.Persistencia;
 using DientesLimpios.Aplicacion.Contratos.Repositorios;
-using DientesLimpios.Aplicacion.Excepciones;
 using DientesLimpios.Aplicacion.Utilidades.Mediador;
 using DientesLimpios.Dominio.Entidades;
-using FluentValidation;
 
 namespace DientesLimpios.Aplicacion.CasosDeUso.Consultorios.Comandos.CrearConsultorio
 {
-    public class CasoDeUsoCrearConsultorio: IRequestHandler<ComandoCrearConsultorio, Guid>
+    public class CasoDeUsoCrearConsultorio : IRequestHandler<ComandoCrearConsultorio, Guid>
     {
         private readonly IRepositorioConsultorios repositorio;
         private readonly IUnidadDeTrabajo unidadDeTrabajo;
 
-        public CasoDeUsoCrearConsultorio(IRepositorioConsultorios repositorio, IUnidadDeTrabajo unidadDeTrabajo )
+        public CasoDeUsoCrearConsultorio(IRepositorioConsultorios repositorio, IUnidadDeTrabajo unidadDeTrabajo)
         {
             this.repositorio = repositorio;
             this.unidadDeTrabajo = unidadDeTrabajo;
