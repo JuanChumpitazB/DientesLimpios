@@ -1,0 +1,9 @@
+﻿using DientesLimpios.Aplicacion.Utilidades.Mediador;
+
+namespace DientesLimpios.Aplicacion.CasosDeUso.Pacientes.Consultas.ObtenerDetallePaciente
+{
+    public class ConsultaObtenerDetallePaciente: IRequest<PacienteDetalleDto>
+    {
+        public required Guid Id { get; set; }
+    }
+}
