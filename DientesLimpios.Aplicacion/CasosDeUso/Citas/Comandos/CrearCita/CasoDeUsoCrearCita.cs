@@ -1,4 +1,5 @@
-﻿using DientesLimpios.Aplicacion.Contratos.Persistencia;
+﻿using DientesLimpios.Aplicacion.Contratos.Notificaciones;
+using DientesLimpios.Aplicacion.Contratos.Persistencia;
 using DientesLimpios.Aplicacion.Contratos.Repositorios;
 using DientesLimpios.Aplicacion.Excepciones;
 using DientesLimpios.Aplicacion.Utilidades.Mediador;
@@ -11,11 +12,14 @@ namespace DientesLimpios.Aplicacion.CasosDeUso.Citas.Comandos.CrearCita
     {
         private readonly IRepositorioCitas repositorio;
         private readonly IUnidadDeTrabajo unidadDeTrabajo;
+        private readonly IServicioNotificaciones servicioNotificaciones;
 
-        public CasoDeUsoCrearCita(IRepositorioCitas repositorio, IUnidadDeTrabajo unidadDeTrabajo)
+        public CasoDeUsoCrearCita(IRepositorioCitas repositorio, IUnidadDeTrabajo unidadDeTrabajo
+            , IServicioNotificaciones servicioNotificaciones)
         {
             this.repositorio = repositorio;
             this.unidadDeTrabajo = unidadDeTrabajo;
+            this.servicioNotificaciones = servicioNotificaciones;
         }
         public async Task<Guid> Handle(ComandoCrearCita request)
         {
@@ -30,11 +34,13 @@ namespace DientesLimpios.Aplicacion.CasosDeUso.Citas.Comandos.CrearCita
             var intervaloDeTiempo = new IntervaloDeTiempo(request.FechaInicio, request.FechaFin);
             var cita = new Cita(request.PacienteId, request.DentistaId, request.ConsultorioId, intervaloDeTiempo);
 
+            Guid? id = null;
+
             try
             {
                 var respuesta = await repositorio.Agregar(cita);
                 await unidadDeTrabajo.Persistir();
-                return respuesta.Id;
+                id = respuesta.Id;
             }
             catch (Exception)
             {
@@ -42,6 +48,10 @@ namespace DientesLimpios.Aplicacion.CasosDeUso.Citas.Comandos.CrearCita
                 throw;
             }
 
+            var citaDB = await repositorio.ObtenerPorId(id.Value);
+            var notificacionDto = citaDB!.ADto();
+            await servicioNotificaciones.EnviarConfirmacionCita(notificacionDto);
+            return id.Value;
         }
     }
 }
